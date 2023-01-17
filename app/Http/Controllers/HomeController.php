@@ -35,8 +35,17 @@ class HomeController extends Controller
     
     public function store(Request $request)
     {
-        $data = $request->all();
+        $data  = $request->all();
+        $image = $request->file('image');
         // dd($data);
+        // 画像がアップロードされていれば、storageに保存する
+        if ($request->hasFile('image')){
+            $path = \Storage::put('/public', $image);
+            $path = explode('/', $path);
+        } else {
+            $path = null;
+        }
+
         // POSTされたデータをDB（memosテーブル）に挿入
         // MEMOモデルにDBへ保存する命令を出す
 
@@ -55,6 +64,7 @@ class HomeController extends Controller
             'content' => $data['content'],
             'user_id' => $data['user_id'],
             'tag_id' =>$tag_id, 
+            'image' =>$path[1],
             'status' => 1
         ]);
         
